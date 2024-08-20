@@ -39,8 +39,8 @@ from flask_sqlalchemy import SQLAlchemy
 #### Initialize the Extension ####
 # If desired, you can enable SQLAlchemy’s native support for data classes by adding MappedAsDataclass as an additional parent class.
 # https://docs.sqlalchemy.org/en/20/changelog/whatsnew_20.html#native-support-for-dataclasses-mapped-as-orm-models
-from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
-class Base(DeclarativeBase, MappedAsDataclass):
+from sqlalchemy.orm import DeclarativeBase
+class Base(DeclarativeBase):
   pass
 
 db = SQLAlchemy(model_class=Base)
@@ -69,7 +69,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 class User(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str]
 
@@ -111,13 +111,8 @@ def user_list():
 @app.route("/users/create", methods=["GET", "POST"])
 def user_create():
     if request.method == "POST":
-        user = User(
-            # is should be automaticaly generated
-            username=request.form["username"],
-            email=request.form["email"],
-        )
-        
-        print(f"####################### {user.id} ############################")
+
+        user = User(username=request.form["username"], email=request.form["email"])
         
         db.session.add(user)
         db.session.commit()

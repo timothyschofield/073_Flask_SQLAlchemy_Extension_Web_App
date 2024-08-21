@@ -122,13 +122,14 @@ def user_create():
 
     return render_template("user/create.html")
 
+
 # Display the details of a single user
 @app.route("/user/detail/<int:id>")
 def user_detail(id):
     user = db.get_or_404(User, id)
     return render_template("user/detail.html", user=user)
 
-
+# Edit a single user
 @app.route('/user/edit/<int:id>', methods=['GET', 'POST'])
 def user_edit(id):
     user = db.get_or_404(User, id)
@@ -147,6 +148,15 @@ def user_edit(id):
 
     return render_template('user/edit.html', user=user)
 
+# Delete a single user
+@app.route("/user/delete/<int:id>", methods=["GET", "POST"])
+def user_delete(id):
+    user = db.get_or_404(User, id)
+
+    if request.method == "POST":
+        db.session.delete(user)
+        db.session.commit()
+        return redirect(url_for("user_list"))
 
 
 

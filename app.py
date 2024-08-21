@@ -98,16 +98,18 @@ with app.app_context():
 # Using Model.query is considered legacy in SQLAlchemy.
 # Prefer using db.session.execute(db.select(...)) instead.
 
+# Landing page - no action 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Display all users
 @app.route("/users")
 def user_list():
     users = db.session.execute(db.select(User).order_by(User.username)).scalars()
     return render_template("user/list.html", users=users)
 
-
+# Create new user
 @app.route("/users/create", methods=["GET", "POST"])
 def user_create():
     if request.method == "POST":
@@ -120,10 +122,34 @@ def user_create():
 
     return render_template("user/create.html")
 
+# Display the details of a single user
 @app.route("/user/detail/<int:id>")
 def user_detail(id):
     user = db.get_or_404(User, id)
     return render_template("user/detail.html", user=user)
+
+
+@app.route('/user/edit/<int:id>', methods=['GET', 'POST'])
+def user_edit(id):
+    user = db.get_or_404(User, id)
+
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+
+        user.username = username
+        user.email = email
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for("user_detail", id=user.id))
+
+    return render_template('user/edit.html', user=user)
+
+
+
+
 
 
 

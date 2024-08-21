@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 style="width: 100%">{% block title %}Add a New User{% endblock %}</h1>
+    <h1 style="width: 100%">
+        {% block title %} Edit {{ user.username }}'s Details
+        {% endblock %}
+    </h1>
     <form method="post">
         <p>
-            <label for="username">User Name</label>
+            <label for="username">User name</label>
             <input type="text" name="username"
+                   value={{ user.username }}
                    placeholder="User name">
             </input>
         </p>
@@ -13,9 +17,12 @@
         <p>
             <label for="email">Email</label>
             <input type="email" name="email"
-                   placeholder="Student email">
+                   value={{ user.email }}
+                   placeholder="User email">
             </input>
         </p>
+
+        <p>
             <button type="submit">Submit</button>
         </p>
     </form>
